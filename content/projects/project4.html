@@ -1,0 +1,41 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: ""
+draft: false
+image: project4pic.jpg
+keywords: ""
+slug: brexit
+title: "Brexit results"
+---
+
+
+
+<p>This article investigates Brexit results data from <a href="https://www.thecrosstab.com/">Elliott Morris</a>, who cleaned it and made it available through his <a href="https://www.datacamp.com/courses/analyzing-election-and-polling-data-in-r">DataCamp class on analysing election and polling data in R</a>. In the visualisation below, the UKIP clearly stands out with a strong preference for leaving the EU. Specifically, constituencies where the UKIP made up a larger percentage of the votes in the UK 2015 elections had larger leave percentages in the 2016 Brexit Referendum. For the other three parties, i.e. Conservatives, Labour and Lib Dems, the leave percentages in the constituencies were around 50% regardlesss of the the party percentage in the 2015 elections.</p>
+<pre class="r"><code>brexit_results &lt;- read_csv(here::here(&quot;data&quot;,&quot;brexit_results.csv&quot;))
+brexit_results_edited &lt;- pivot_longer(brexit_results, 2:5, names_to=&quot;party&quot;, values_to=&quot;party_percentage&quot;) %&gt;% 
+  select(leave_share, party, party_percentage)
+
+brexit_plot &lt;- ggplot(brexit_results_edited, aes(x=party_percentage, y=leave_share, color = party)) +
+  geom_point(alpha=0.5, size=1) +
+  geom_smooth(method=lm) +
+  scale_color_manual(labels=c(&quot;Conservative&quot;,&quot;Labour&quot;,&quot;Lib Dems&quot;,&quot;UKIP&quot;),    values = c(&quot;#589bc3&quot;, &quot;#b74545&quot;, &quot;#f5c553&quot;, &quot;#ebe94a&quot;)) +
+  theme_bw() +
+  labs(title=&quot;UKIP voters showed strongest preference for Brexit&quot;, 
+       subtitle=&quot;Relation between party % and Brexit preference&quot;,
+       x=&quot;Party % in the UK 2015 general elections&quot;,
+       y=&quot;Leave % in the 2016 Brexit referendum&quot;) +
+  theme(legend.position=&quot;bottom&quot;,
+        legend.title=element_blank(),
+        aspect.ratio=4/7,
+        #plot.title = element_text(size=9),
+        axis.title.x=element_text(size=7),
+        axis.title.y=element_text(size=7),
+        axis.text.x=element_text(size=6),
+        axis.text.y=element_text(size=6),
+        legend.text=element_text(size=6.5))
+
+brexit_plot</code></pre>
+<p><img src="/projects/project4_files/figure-html/brexit_plot-1.png" width="672" /></p>

@@ -1,0 +1,461 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: ""
+draft: false
+image: project1pic.jpg
+keywords: ""
+slug: drinks
+title: "Where Do People Drink The Most Beer, Wine And Spirits?"
+---
+
+
+
+<p>Back in 2014, <a href="https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/">fivethiryeight.com</a> published an article on alchohol consumption in different countries. The article discusses country-specific beer, wine, and spirit consumption per person in 2010. In the following article, these consumption figures will be analysed in order to find out where people drink the most beer, wine and spirits. The data set on which this analysis is based can be easily retrieved from the <code>fivethirtyeight</code> package and will be called <code>drinks</code> here.</p>
+<pre class="r"><code>library(fivethirtyeight)</code></pre>
+<pre><code>## Some larger datasets need to be installed separately, like senators and
+## house_district_forecast. To install these, we recommend you install the
+## fivethirtyeightdata package by running:
+## install.packages(&#39;fivethirtyeightdata&#39;, repos =
+## &#39;https://fivethirtyeightdata.github.io/drat/&#39;, type = &#39;source&#39;)</code></pre>
+<pre class="r"><code>data(drinks)</code></pre>
+<div id="data-overview" class="section level1">
+<h1>Data Overview</h1>
+<p>From the glimpse below, we can see that the <code>drinks</code> data set records the beer servings (<code>beer_servings</code>), spirit servings (<code>spirit_servings</code>), wine servings (<code>wine_servings</code>), and total litres of pure alcohol consumed (<code>total_litres_of_pure_alcohol</code>) for 193 countries (<code>country</code>). Furthermore, there are no missing values present and so all 193 observations can be used without running into problems.</p>
+<pre class="r"><code>glimpse(drinks)</code></pre>
+<pre><code>## Rows: 193
+## Columns: 5
+## $ country                      &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;An…
+## $ beer_servings                &lt;int&gt; 0, 89, 25, 245, 217, 102, 193, 21, 261, …
+## $ spirit_servings              &lt;int&gt; 0, 132, 0, 138, 57, 128, 25, 179, 72, 75…
+## $ wine_servings                &lt;int&gt; 0, 54, 14, 312, 45, 45, 221, 11, 212, 19…
+## $ total_litres_of_pure_alcohol &lt;dbl&gt; 0.0, 4.9, 0.7, 12.4, 5.9, 4.9, 8.3, 3.8,…</code></pre>
+<p>The variables are in general right skewed, meaning that the majority of observations lie below the mean. This is especially the case for beer and spirit servings.</p>
+<pre class="r"><code>skim(drinks)</code></pre>
+<table style='width: auto;'
+        class='table table-condensed'>
+<caption>
+(#tab:skim_data)Data summary
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Name
+</td>
+<td style="text-align:left;">
+drinks
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of rows
+</td>
+<td style="text-align:left;">
+193
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of columns
+</td>
+<td style="text-align:left;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+_______________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Column type frequency:
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+________________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Group variables
+</td>
+<td style="text-align:left;">
+None
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+empty
+</th>
+<th style="text-align:right;">
+n_unique
+</th>
+<th style="text-align:right;">
+whitespace
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+country
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+193
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+sd
+</th>
+<th style="text-align:right;">
+p0
+</th>
+<th style="text-align:right;">
+p25
+</th>
+<th style="text-align:right;">
+p50
+</th>
+<th style="text-align:right;">
+p75
+</th>
+<th style="text-align:right;">
+p100
+</th>
+<th style="text-align:left;">
+hist
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+beer_servings
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+106.16
+</td>
+<td style="text-align:right;">
+101.14
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+20.0
+</td>
+<td style="text-align:right;">
+76.0
+</td>
+<td style="text-align:right;">
+188.0
+</td>
+<td style="text-align:right;">
+376.0
+</td>
+<td style="text-align:left;">
+▇▃▂▂▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+spirit_servings
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+80.99
+</td>
+<td style="text-align:right;">
+88.28
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4.0
+</td>
+<td style="text-align:right;">
+56.0
+</td>
+<td style="text-align:right;">
+128.0
+</td>
+<td style="text-align:right;">
+438.0
+</td>
+<td style="text-align:left;">
+▇▃▂▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+wine_servings
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+49.45
+</td>
+<td style="text-align:right;">
+79.70
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+8.0
+</td>
+<td style="text-align:right;">
+59.0
+</td>
+<td style="text-align:right;">
+370.0
+</td>
+<td style="text-align:left;">
+▇▁▁▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+total_litres_of_pure_alcohol
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.72
+</td>
+<td style="text-align:right;">
+3.77
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.3
+</td>
+<td style="text-align:right;">
+4.2
+</td>
+<td style="text-align:right;">
+7.2
+</td>
+<td style="text-align:right;">
+14.4
+</td>
+<td style="text-align:left;">
+▇▃▅▃▁
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="beer-consumption" class="section level1">
+<h1>Beer Consumption</h1>
+<p>Starting with beer consumption, it can be expected that those countries with famous beer brands and high beer production are also those countries with the highest consumption figures. The average beer consumption per country is around ~106 glasses per year, with the highest figure recorded in Namibia with 376 glasses. This is somewhat of a surprise, as even though Namibia is known for its beer to some extent, it is by far not any of the largest beer producing countries.</p>
+<pre class="r"><code>favstats(drinks$beer_servings)</code></pre>
+<pre><code>##  min Q1 median  Q3 max     mean       sd   n missing
+##    0 20     76 188 376 106.1606 101.1431 193       0</code></pre>
+<pre class="r"><code>ggplot(drinks, aes(x=beer_servings)) +
+  geom_histogram(color=&quot;#E1A53E&quot;, fill=&quot;#FDC668&quot;) +
+  theme_bw() +
+  labs(x=&quot;Beer servings per person&quot;,
+       y=&quot;Country frequency&quot;,
+       title=&quot;How many yearly servings of beer did an individual per country drink in 2010?&quot;,
+       subtitle=&quot;Most countries had an average per person beer consumption below the mean figure&quot;) +
+  geom_vline(aes(xintercept=mean(beer_servings)),
+             color=&quot;#905E08&quot;, linetype=&quot;dashed&quot;, size=1)</code></pre>
+<p><img src="/projects/project1_files/figure-html/beer_consumption_overall-1.png" width="672" /></p>
+<p>Diving deeper into the beer consumption on country level, the top 25 beer consuming countries can be found in the figure below. Another interesting find is that the countries listed are from all over world and so there is no distinct relation between geography and beer consumption - making drinking beer not that much of a cultural preference but more of individual preference.</p>
+<pre class="r"><code># Order observations based on beer consumption and select top 25
+drinks &lt;- drinks %&gt;% arrange(desc(beer_servings))
+top_25_beer &lt;- drinks[1:25,]
+
+# Plot top 25 beer consuming countries
+ggplot(top_25_beer, aes(x=reorder(country, beer_servings), y=beer_servings)) +
+  geom_col(fill=&#39;#FDC668&#39;, color=&quot;#E1A53E&quot;) +
+  labs (y=&quot;Beer servings per person&quot;,
+        x=&quot;&quot;,
+        title=&quot;Top beer producing countries don&#39;t consume the most beer by default&quot;,
+        subtitle=&quot;An overview of the top 25 beer consuming countries&quot;) +
+  coord_flip() +
+  theme_bw()</code></pre>
+<p><img src="/projects/project1_files/figure-html/beer_consumption_top25_countries-1.png" width="672" /></p>
+</div>
+<div id="wine-consumption" class="section level1">
+<h1>Wine Consumption</h1>
+<p>Moving on to wine consumption, a similar hypothesis holds as before with beer consumption: countries producing more wine (e.g. France, Italy, Chile) are expected to drink more wine as compared to those countries with less or no wine production. This hypothesis did not particularly turn out to hold with beer consumption, so let’s see if wine consumption displays a different pattern too.</p>
+<p>The mean number of wine glasses served per person worldwide is ~49. However, the median of this is only 8, which indicates that much fewer people drink wine as compared to beer where the median beer glasses drunk was 76.</p>
+<pre class="r"><code>favstats(drinks$wine_servings)</code></pre>
+<pre><code>##  min Q1 median Q3 max     mean      sd   n missing
+##    0  1      8 59 370 49.45078 79.6976 193       0</code></pre>
+<pre class="r"><code>ggplot(drinks, aes(x=wine_servings)) +
+  geom_histogram(color=&quot;#983F29&quot;, fill=&quot;#DA6E53&quot;) +
+  theme_bw() +
+  labs(x=&quot;Wine servings per person&quot;,
+       y=&quot;Country frequency&quot;,
+       title=&quot;How many yearly servings of wine did an individual per country drink in 2010?&quot;,
+       subtitle=&quot;Most countries had an average per person wine consumption below the mean figure&quot;) +
+  geom_vline(aes(xintercept=mean(beer_servings)),
+             color=&quot;#724236&quot;, linetype=&quot;dashed&quot;, size=1)</code></pre>
+<p><img src="/projects/project1_files/figure-html/wine_consumption_overall-1.png" width="672" /></p>
+<p>France is ranked as the top wine drinking country with an average of 370 servings per person. This is not a surprise seeing the world famous wines that this country produces. In contrast to what we saw for beer consumptions, the top 25 wine consuming countries are geographically clustered - namely, they are mainly in Europe. It can therefore be tentatively suggested that drinking wine is somewhat more of a European activity.</p>
+<pre class="r"><code># Order observations based on wine consumption and select top 25
+drinks &lt;- drinks %&gt;% arrange(desc(wine_servings))
+top_25_wine &lt;- drinks[1:25,]
+
+# Plot top 25 wine consuming countries
+ggplot(top_25_wine, aes(x=reorder(country, wine_servings), y=wine_servings)) +
+  geom_col(fill=&#39;#DA6E53&#39;, color=&quot;#983F29&quot;) +
+  labs (y=&quot;Wine servings per person&quot;,
+        x=&quot;&quot;,
+        title=&quot;Top wine producing country France also turns out the top wine drinker&quot;,
+        subtitle=&quot;An overview of the top 25 wine consuming countries&quot;) +
+  coord_flip() +
+  theme_bw()</code></pre>
+<p><img src="/projects/project1_files/figure-html/wine_consumption_top25_countries-1.png" width="672" /></p>
+</div>
+<div id="spirit-consumption" class="section level1">
+<h1>Spirit Consumption</h1>
+<p>Finally, a similar analysis will be conducted on the spirit consumption figures. Overall, countries drink more spirits than wine but the average servings are still less than beer.</p>
+<p>The mean number of wine glasses served per person worldwide is ~49. However, the median of this is only 8, which indicates that much fewer people drink wine as compared to beer where the median beer glasses drunk was 76.</p>
+<pre class="r"><code>favstats(drinks$spirit_servings)</code></pre>
+<pre><code>##  min Q1 median  Q3 max     mean       sd   n missing
+##    0  4     56 128 438 80.99482 88.28431 193       0</code></pre>
+<pre class="r"><code>ggplot(drinks, aes(x=spirit_servings)) +
+  geom_histogram(color=&quot;#579795&quot;, fill=&quot;#9DC9C7&quot;) +
+  theme_bw() +
+  labs(x=&quot;Spirit servings per person&quot;,
+       y=&quot;Country frequency&quot;,
+       title=&quot;How many yearly servings of spirit did an individual per country drink in 2010?&quot;,
+       subtitle=&quot;Most countries had an average per person spirit consumption below the mean figure&quot;) +
+  geom_vline(aes(xintercept=mean(beer_servings)),
+             color=&quot;#1B6B68&quot;, linetype=&quot;dashed&quot;, size=1)</code></pre>
+<p><img src="/projects/project1_files/figure-html/spirit_consumption_overall-1.png" width="672" /></p>
+<p>In contrast to the wine observations, the top 25 spirit drinking countries are mostly not in Europe and those that are in Europe are not the top wine drinking countries. It could therefore be said that wine and spirit are seen as alcohol substitutes for countries, whereas the beer servings figures show a less clear geographical preferences.</p>
+<pre class="r"><code># Order observations based on spirit consumption and select top 25
+drinks &lt;- drinks %&gt;% arrange(desc(spirit_servings))
+top_25_wine &lt;- drinks[1:25,]
+
+# Plot top 25 wine consuming countries
+ggplot(top_25_wine, aes(x=reorder(country, spirit_servings), y=spirit_servings)) +
+  geom_col(fill=&#39;#9DC9C7&#39;, color=&quot;#579795&quot;) +
+  labs (y=&quot;Spirit servings per person&quot;,
+        x=&quot;&quot;,
+        title=&quot;Grenada is taking the lead with most spirit servings per person&quot;,
+        subtitle=&quot;An overview of the top 25 spirit consuming countries&quot;) +
+  coord_flip() +
+  theme_bw()</code></pre>
+<p><img src="/projects/project1_files/figure-html/spirit_consumption_top25_countries-1.png" width="672" /></p>
+</div>

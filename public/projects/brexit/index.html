@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="I am currently a London Business School student reading for the Masters in Analytics and Management (MAM). Originally I am from the Netherlands, where I have studied the double degree programme in Econometrics &amp; Operations Research and Economics &amp; Business Economics at the Erasmus University Rotterdam.">
+	<meta name="author" content="Selin Beijersbergen">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>Brexit results &middot; Forty</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Selin Beijersbergen</strong> <span></span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+                <li><a href="/blogs/ipsum">Generic Blog</a></li>
+            
+                <li><a href="/elements.html">Elements</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Brexit results</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/projects/project4pic.jpg" alt="" /></span>
+                            
+                            
+
+
+<p>This article investigates Brexit results data from <a href="https://www.thecrosstab.com/">Elliott Morris</a>, who cleaned it and made it available through his <a href="https://www.datacamp.com/courses/analyzing-election-and-polling-data-in-r">DataCamp class on analysing election and polling data in R</a>. In the visualisation below, the UKIP clearly stands out with a strong preference for leaving the EU. Specifically, constituencies where the UKIP made up a larger percentage of the votes in the UK 2015 elections had larger leave percentages in the 2016 Brexit Referendum. For the other three parties, i.e. Conservatives, Labour and Lib Dems, the leave percentages in the constituencies were around 50% regardlesss of the the party percentage in the 2015 elections.</p>
+<pre class="r"><code>brexit_results &lt;- read_csv(here::here(&quot;data&quot;,&quot;brexit_results.csv&quot;))
+brexit_results_edited &lt;- pivot_longer(brexit_results, 2:5, names_to=&quot;party&quot;, values_to=&quot;party_percentage&quot;) %&gt;% 
+  select(leave_share, party, party_percentage)
+
+brexit_plot &lt;- ggplot(brexit_results_edited, aes(x=party_percentage, y=leave_share, color = party)) +
+  geom_point(alpha=0.5, size=1) +
+  geom_smooth(method=lm) +
+  scale_color_manual(labels=c(&quot;Conservative&quot;,&quot;Labour&quot;,&quot;Lib Dems&quot;,&quot;UKIP&quot;),    values = c(&quot;#589bc3&quot;, &quot;#b74545&quot;, &quot;#f5c553&quot;, &quot;#ebe94a&quot;)) +
+  theme_bw() +
+  labs(title=&quot;UKIP voters showed strongest preference for Brexit&quot;, 
+       subtitle=&quot;Relation between party % and Brexit preference&quot;,
+       x=&quot;Party % in the UK 2015 general elections&quot;,
+       y=&quot;Leave % in the 2016 Brexit referendum&quot;) +
+  theme(legend.position=&quot;bottom&quot;,
+        legend.title=element_blank(),
+        aspect.ratio=4/7,
+        #plot.title = element_text(size=9),
+        axis.title.x=element_text(size=7),
+        axis.title.y=element_text(size=7),
+        axis.text.x=element_text(size=6),
+        axis.text.y=element_text(size=6),
+        legend.text=element_text(size=6.5))
+
+brexit_plot</code></pre>
+<p><img src="/projects/project4_files/figure-html/brexit_plot-1.png" width="672" /></p>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

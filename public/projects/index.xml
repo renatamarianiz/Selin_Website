@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on Forty</title>
+    <link>/projects/</link>
+    <description>Recent content in Projects on Forty</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 31 Oct 2017 22:27:21 -0500</lastBuildDate><atom:link href="/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Brexit results</title>
+      <link>/projects/brexit/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/projects/brexit/</guid>
+      <description>This article investigates Brexit results data from Elliott Morris, who cleaned it and made it available through his DataCamp class on analysing election and polling data in R. In the visualisation below, the UKIP clearly stands out with a strong preference for leaving the EU. Specifically, constituencies where the UKIP made up a larger percentage of the votes in the UK 2015 elections had larger leave percentages in the 2016 Brexit Referendum.</description>
+    </item>
+    
+    <item>
+      <title>Climate Change</title>
+      <link>/projects/climatechange/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/projects/climatechange/</guid>
+      <description>In this article, we will study climate change for which we find data on the Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies in the Northern Hemisphere at NASA’s Goddard Institute for Space Studies. The tabular data of temperature anomalies can be found here.
+To define temperature anomalies we need to have a reference, or base, period for which NASA chose the period between 1951-1980.
+Data Set The data set is loaded in the code chunk below, and stored as weather.</description>
+    </item>
+    
+    <item>
+      <title>IMDB</title>
+      <link>/projects/imdb/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/projects/imdb/</guid>
+      <description>Analysis of Movies- IMDB Dataset This article looks at a subset sample of movies, taken from the Kaggle IMDB 5000 movie dataset. First, it’s worth inspecting the data set globally. As can be seen below, each movie record contains 11 variables. While title, genre, director, year, and duration are obvious in meaning, the other variables indicate the following. grossis the gross earnings in the US box office, not adjusted for inflation.</description>
+    </item>
+    
+    <item>
+      <title>Where Do People Drink The Most Beer, Wine And Spirits?</title>
+      <link>/projects/drinks/</link>
+      <pubDate>Tue, 31 Oct 2017 21:28:43 -0500</pubDate>
+      
+      <guid>/projects/drinks/</guid>
+      <description>Back in 2014, fivethiryeight.com published an article on alchohol consumption in different countries. The article discusses country-specific beer, wine, and spirit consumption per person in 2010. In the following article, these consumption figures will be analysed in order to find out where people drink the most beer, wine and spirits. The data set on which this analysis is based can be easily retrieved from the fivethirtyeight package and will be called drinks here.</description>
+    </item>
+    
+  </channel>
+</rss>

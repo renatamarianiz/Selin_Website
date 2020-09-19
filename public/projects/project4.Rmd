@@ -1,0 +1,68 @@
+
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: ""
+draft: false
+image: project4pic.jpg
+keywords: ""
+slug: brexit
+title: "Brexit results"
+---
+
+```{r load_libraries, include=FALSE}
+
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(GGally)
+library(readxl)
+library(here)
+library(skimr)
+library(janitor)
+library(broom)
+library(tidyquant)
+library(infer)
+library(openintro)
+library(plotly)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This article investigates Brexit results data from [Elliott Morris](https://www.thecrosstab.com/), who cleaned it and made it available through his [DataCamp class on analysing election and polling data in R](https://www.datacamp.com/courses/analyzing-election-and-polling-data-in-r). In the visualisation below, the UKIP clearly stands out with a strong preference for leaving the EU. Specifically, constituencies where the UKIP made up a larger percentage of the votes in the UK 2015 elections had larger leave percentages in the 2016 Brexit Referendum. For the other three parties, i.e. Conservatives, Labour and Lib Dems, the leave percentages in the constituencies were around 50% regardlesss of the the party percentage in the 2015 elections.
+
+
+```{r, brexit_plot, warning=FALSE, message=FALSE}
+
+
+brexit_results <- read_csv(here::here("data","brexit_results.csv"))
+brexit_results_edited <- pivot_longer(brexit_results, 2:5, names_to="party", values_to="party_percentage") %>% 
+  select(leave_share, party, party_percentage)
+
+brexit_plot <- ggplot(brexit_results_edited, aes(x=party_percentage, y=leave_share, color = party)) +
+  geom_point(alpha=0.5, size=1) +
+  geom_smooth(method=lm) +
+  scale_color_manual(labels=c("Conservative","Labour","Lib Dems","UKIP"),    values = c("#589bc3", "#b74545", "#f5c553", "#ebe94a")) +
+  theme_bw() +
+  labs(title="UKIP voters showed strongest preference for Brexit", 
+       subtitle="Relation between party % and Brexit preference",
+       x="Party % in the UK 2015 general elections",
+       y="Leave % in the 2016 Brexit referendum") +
+  theme(legend.position="bottom",
+        legend.title=element_blank(),
+        aspect.ratio=4/7,
+        #plot.title = element_text(size=9),
+        axis.title.x=element_text(size=7),
+        axis.title.y=element_text(size=7),
+        axis.text.x=element_text(size=6),
+        axis.text.y=element_text(size=6),
+        legend.text=element_text(size=6.5))
+
+brexit_plot
+
+```

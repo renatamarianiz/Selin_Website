@@ -1,0 +1,182 @@
+---
+categories:
+- ""
+- ""
+date: "2017-10-31T21:28:43-05:00"
+description: ""
+draft: false
+image: project1pic.jpg
+keywords: ""
+slug: drinks
+title: "Where Do People Drink The Most Beer, Wine And Spirits?"
+---
+
+
+```{r load_libraries, include=FALSE}
+library(tidyverse)
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(kableExtra)
+library(patchwork)
+library(scales)
+library(tidytext)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Back in 2014, [fivethiryeight.com](https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/) published an article on alchohol consumption in different countries. The article discusses country-specific beer, wine, and spirit consumption per person in 2010. In the following article, these consumption figures will be analysed in order to find out where people drink the most beer, wine and spirits. The data set on which this analysis is based can be easily retrieved from the `fivethirtyeight` package and will be called `drinks` here.
+
+```{r, load_alcohol_data}
+library(fivethirtyeight)
+data(drinks)
+
+```
+
+# Data Overview
+From the glimpse below, we can see that the `drinks` data set records the beer servings (`beer_servings`), spirit servings (`spirit_servings`), wine servings (`wine_servings`), and total litres of pure alcohol consumed (`total_litres_of_pure_alcohol`) for 193 countries (`country`). Furthermore, there are no missing values present and so all 193 observations can be used without running into problems.
+
+```{r glimpse_data}
+glimpse(drinks)
+
+```
+
+The variables are in general right skewed, meaning that the majority of observations lie below the mean. This is especially the case for beer and spirit servings.
+
+```{r skim_data}
+skim(drinks)
+```
+
+# Beer Consumption
+Starting with beer consumption, it can be expected that those countries with famous beer brands and high beer production are also those countries with the highest consumption figures. The average beer consumption per country is around ~106 glasses per year, with the highest figure recorded in Namibia with 376 glasses. This is somewhat of a surprise, as even though Namibia is known for its beer to some extent, it is by far not any of the largest beer producing countries.
+
+```{r beer_consumption_overall, message=FALSE}
+
+favstats(drinks$beer_servings)
+
+ggplot(drinks, aes(x=beer_servings)) +
+  geom_histogram(color="#E1A53E", fill="#FDC668") +
+  theme_bw() +
+  labs(x="Beer servings per person",
+       y="Country frequency",
+       title="How many yearly servings of beer did an individual per country drink in 2010?",
+       subtitle="Most countries had an average per person beer consumption below the mean figure") +
+  geom_vline(aes(xintercept=mean(beer_servings)),
+             color="#905E08", linetype="dashed", size=1)
+  
+
+```
+
+Diving deeper into the beer consumption on country level, the top 25 beer consuming countries can be found in the figure below. Another interesting find is that the countries listed are from all over world and so there is no distinct relation between geography and beer consumption - making drinking beer not that much of a cultural preference but more of individual preference.
+
+```{r beer_consumption_top25_countries}
+
+# Order observations based on beer consumption and select top 25
+drinks <- drinks %>% arrange(desc(beer_servings))
+top_25_beer <- drinks[1:25,]
+
+# Plot top 25 beer consuming countries
+ggplot(top_25_beer, aes(x=reorder(country, beer_servings), y=beer_servings)) +
+  geom_col(fill='#FDC668', color="#E1A53E") +
+  labs (y="Beer servings per person",
+        x="",
+        title="Top beer producing countries don't consume the most beer by default",
+        subtitle="An overview of the top 25 beer consuming countries") +
+  coord_flip() +
+  theme_bw()
+
+```
+
+# Wine Consumption
+Moving on to wine consumption, a similar hypothesis holds as before with beer consumption: countries producing more wine (e.g. France, Italy, Chile) are expected to drink more wine as compared to those countries with less or no wine production. This hypothesis did not particularly turn out to hold with beer consumption, so let's see if wine consumption displays a different pattern too.
+
+The mean number of wine glasses served per person worldwide is ~49. However, the median of this is only 8, which indicates that much fewer people drink wine as compared to beer where the median beer glasses drunk was 76.
+
+
+```{r wine_consumption_overall, message=FALSE}
+
+favstats(drinks$wine_servings)
+
+ggplot(drinks, aes(x=wine_servings)) +
+  geom_histogram(color="#983F29", fill="#DA6E53") +
+  theme_bw() +
+  labs(x="Wine servings per person",
+       y="Country frequency",
+       title="How many yearly servings of wine did an individual per country drink in 2010?",
+       subtitle="Most countries had an average per person wine consumption below the mean figure") +
+  geom_vline(aes(xintercept=mean(beer_servings)),
+             color="#724236", linetype="dashed", size=1)
+  
+
+```
+
+France is ranked as the top wine drinking country with an average of 370 servings per person. This is not a surprise seeing the world famous wines that this country produces. In contrast to what we saw for beer consumptions, the top 25 wine consuming countries are geographically clustered - namely, they are mainly in Europe. It can therefore be tentatively suggested that drinking wine is somewhat more of a European activity.
+
+```{r wine_consumption_top25_countries}
+
+# Order observations based on wine consumption and select top 25
+drinks <- drinks %>% arrange(desc(wine_servings))
+top_25_wine <- drinks[1:25,]
+
+# Plot top 25 wine consuming countries
+ggplot(top_25_wine, aes(x=reorder(country, wine_servings), y=wine_servings)) +
+  geom_col(fill='#DA6E53', color="#983F29") +
+  labs (y="Wine servings per person",
+        x="",
+        title="Top wine producing country France also turns out the top wine drinker",
+        subtitle="An overview of the top 25 wine consuming countries") +
+  coord_flip() +
+  theme_bw()
+
+```
+
+# Spirit Consumption
+Finally, a similar analysis will be conducted on the spirit consumption figures. Overall, countries drink more spirits than wine but the average servings are still less than beer.
+
+The mean number of wine glasses served per person worldwide is ~49. However, the median of this is only 8, which indicates that much fewer people drink wine as compared to beer where the median beer glasses drunk was 76.
+
+
+```{r spirit_consumption_overall, message=FALSE}
+
+favstats(drinks$spirit_servings)
+
+ggplot(drinks, aes(x=spirit_servings)) +
+  geom_histogram(color="#579795", fill="#9DC9C7") +
+  theme_bw() +
+  labs(x="Spirit servings per person",
+       y="Country frequency",
+       title="How many yearly servings of spirit did an individual per country drink in 2010?",
+       subtitle="Most countries had an average per person spirit consumption below the mean figure") +
+  geom_vline(aes(xintercept=mean(beer_servings)),
+             color="#1B6B68", linetype="dashed", size=1)
+  
+
+```
+
+In contrast to the wine observations, the top 25 spirit drinking countries are mostly not in Europe and those that are in Europe are not the top wine drinking countries. It could therefore be said that wine and spirit are seen as alcohol substitutes for countries, whereas the beer servings figures show a less clear geographical preferences.
+
+```{r spirit_consumption_top25_countries}
+
+# Order observations based on spirit consumption and select top 25
+drinks <- drinks %>% arrange(desc(spirit_servings))
+top_25_wine <- drinks[1:25,]
+
+# Plot top 25 wine consuming countries
+ggplot(top_25_wine, aes(x=reorder(country, spirit_servings), y=spirit_servings)) +
+  geom_col(fill='#9DC9C7', color="#579795") +
+  labs (y="Spirit servings per person",
+        x="",
+        title="Grenada is taking the lead with most spirit servings per person",
+        subtitle="An overview of the top 25 spirit consuming countries") +
+  coord_flip() +
+  theme_bw()
+
+```
+
